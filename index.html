@@ -1,146 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delightful Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <h1 class="title">Delightful Notes</h1>
-        <hr color="#6200ea">
-        <div id="notes-container" class="notes-container">
-            <div id="notes-list" class="notes-list"></div>
-        </div>
-
-        <button id="write-btn" class="write-btn">✍️</button>
-
-        <div id="write-modal" class="write-modal">
-            <div class="modal-content">
-                <h2 class="modal-title">Today's Note</h2>
-                <textarea id="note-input" class="note-input" rows="5" placeholder="Start here..."></textarea>
-                <div class="modal-actions">
-                    <button id="save-btn" class="save-btn">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, startAfter, limit } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIsQtSpCCA1QDks8K6WpDe1jXppMtwVOs",
-            authDomain: "notes-81643.firebaseapp.com",
-            projectId: "notes-81643",
-            storageBucket: "notes-81643.firebasestorage.app",
-            messagingSenderId: "896217476176",
-            appId: "1:896217476176:web:02bb0d8fe5dae50519f555",
-            measurementId: "G-PVHEPSRWML"
-        };
-
-        const app=initializeApp(firebaseConfig);
-        const db=getFirestore(app);
-
-        const writeBtn = document.getElementById('write-btn');
-        const writeModal = document.getElementById('write-modal');
-        const noteInput = document.getElementById('note-input');
-        const saveBtn = document.getElementById('save-btn');
-        const notesList = document.getElementById('notes-list');
-
-        // Event Listeners
-        writeBtn.addEventListener('click', () => {
-            writeModal.classList.add('show');  // Show the modal
-        });
-
-saveBtn.addEventListener('click', async () => {
-    const noteContent = noteInput.value.trim();
-    if (noteContent) {
-        // Get the current date and time
-        const now = new Date();
-        
-        // Format the date as "DD.MM.YYYY hh:mm a.m./p.m."
-        const formattedDate = formatDate(now);
-
-        // Save the note with the formatted date
-        await addDoc(collection(db, "notes"), {
-            date: formattedDate,
-            content: noteContent,
-            timestamp: now // Save the timestamp as well for sorting
-        });
-
-        noteInput.value = ''; // Clear the input
-        writeModal.classList.remove('show'); // Hide the modal
-        loadNotes();
-    }
-});
-
-function formatDate(date) {
-    const day = date.getDate(); // No padStart here, so 1 will be displayed as "1"
-    const month = date.getMonth() + 1; // No padStart here, so 1 will be displayed as "1"
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes(); // No padStart here, so 1 will be displayed as "1"
-    const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
-    const hours12 = hours % 12 || 12; // Convert 24-hour format to 12-hour format
-
-    return `${day}.${month}.${year} ${hours12}:${minutes} ${ampm}`;
-}
-
-
-
-let lastVisible = null;
-let isLoading = false; // Track if notes are currently loading
-
-const loadNotes = async () => {
-    if (isLoading) return; // Prevent multiple requests at the same time
-    isLoading = true;
-
-    const notesQuery = lastVisible
-        ? query(collection(db, "notes"), orderBy("timestamp", "desc"), startAfter(lastVisible), limit(5))
-        : query(collection(db, "notes"), orderBy("timestamp", "desc"), limit(5));
-    
-    const querySnapshot = await getDocs(notesQuery);
-    const notesCount = querySnapshot.size;
-
-    if (notesCount === 0) {
-        // No more notes to load, so stop the infinite scroll
-        return;
-    }
-
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        
-        // Display the formatted date and note content
-        const noteElement = document.createElement('div');
-        noteElement.classList.add('note');
-        noteElement.innerHTML = `
-            
-	<p>${data.content}</p>
-	<p style="float: right;">${data.date}</p><br>
-            
-        `;
-        notesList.appendChild(noteElement);
-    });
-
-    // Update the lastVisible variable to point to the last document in the current batch
-    lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-    isLoading = false; // Reset the loading state
-};
-
-// Infinite Scroll Listener
-window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-        loadNotes();
-    }
-});
-
-// Initial Load
-loadNotes();
-
-    </script>
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Delightful Notes</title>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+		<link href="styles.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<h1 class="title">Personal Diary</h1>
+			<hr color="#6200ea">
+			<div id="notes-container" class="notes-container">
+				<div id="notes-list" class="notes-list"></div>
+			</div>
+			<button id="write-btn" class="write-btn">✍️</button>
+			<div id="write-modal" class="write-modal">
+				<div class="modal-content">
+					<h2 class="modal-title">Today's Note</h2>
+					<textarea id="note-input" class="note-input" rows="5" placeholder="Start here..."></textarea>
+					<div class="modal-actions">
+						<button id="save-btn" class="save-btn">Save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="module">
+			import
+			{
+				initializeApp
+			}
+				from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+			import
+			{
+				getFirestore, collection, addDoc, getDocs, query, orderBy, startAfter, limit
+			}
+				from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+			const firebaseConfig=
+			{
+				apiKey: "AIzaSyBIsQtSpCCA1QDks8K6WpDe1jXppMtwVOs",
+				authDomain: "notes-81643.firebaseapp.com",
+				projectId: "notes-81643",
+				storageBucket: "notes-81643.firebasestorage.app",
+				messagingSenderId: "896217476176",
+				appId: "1:896217476176:web:02bb0d8fe5dae50519f555",
+				measurementId: "G-PVHEPSRWML"
+			};
+			const app=initializeApp(firebaseConfig);
+			const db=getFirestore(app);
+			const writeBtn=document.getElementById('write-btn');
+			const writeModal=document.getElementById('write-modal');
+			const noteInput=document.getElementById('note-input');
+			const saveBtn=document.getElementById('save-btn');
+			const notesList=document.getElementById('notes-list');
+			writeBtn.addEventListener('click', ()=>
+				{
+					writeModal.classList.add('show');
+				});
+			saveBtn.addEventListener('click', async ()=>
+				{
+					const noteContent=noteInput.value.trim();
+					if(noteContent)
+					{
+						const now=new Date();
+						const formattedDate=formatDate(now);
+						await addDoc(collection(db, "notes"),
+							     {
+								     date: formattedDate, content: noteContent, timestamp: now
+							     });
+						noteInput.value='';
+						writeModal.classList.remove('show');
+						loadNotes();
+					}
+				});
+			function formatDate(date)
+			{
+				const day=date.getDate();
+				const month=date.getMonth() + 1;
+				const year=date.getFullYear();
+				const hours=date.getHours();
+				const minutes=date.getMinutes();
+				const ampm=hours>=12?'p.m.':'a.m.';
+				const hours12=hours%12 || 12;
+				return `${day}.${month}.${year} ${hours12}:${minutes} ${ampm}`;
+			}
+			let lastVisible=null;
+			let isLoading=false;
+			const loadNotes=async()=>
+				{
+					if(isLoading)
+						return;
+					isLoading=true;
+					const notesQuery=lastVisible?query(collection(db, "notes"), orderBy("timestamp", "desc"), startAfter(lastVisible), limit(5)):query(collection(db, "notes"), orderBy("timestamp", "desc"), limit(5));
+					const querySnapshot=await getDocs(notesQuery);
+					const notesCount=querySnapshot.size;
+					if(notesCount===0)
+					{
+						return;
+					}
+					querySnapshot.forEach((doc)=>
+						{
+							const data=doc.data();
+							const noteElement=document.createElement('div');
+							noteElement.classList.add('note');
+							noteElement.innerHTML=`<p>${data.content}</p><p style="float: right;">${data.date}</p><br>`;
+							notesList.appendChild(noteElement);
+						});
+					lastVisible=querySnapshot.docs[querySnapshot.docs.length-1];
+					isLoading=false;
+				};
+			window.addEventListener('scroll', ()=>
+				{
+					if(window.innerHeight+window.scrollY>=document.body.offsetHeight-50)
+					{
+						loadNotes();
+					}
+				});
+			loadNotes();
+		</script>
+	</body>
 </html>
