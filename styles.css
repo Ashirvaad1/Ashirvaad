@@ -92,7 +92,6 @@ body
     background-color: #3700b3;
     transform: scale(1.1);
 }
-
 .write-modal
 {
     display: none;
@@ -170,10 +169,23 @@ body
     {
         padding: 1.5rem;
     }
-
     .write-btn
     {
         padding: 1rem;
         font-size: 1.8rem;
     }
+}
+
+.visibility-toggle
+{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #202124;
+}
+
+.visibility-toggle label
+{
+    margin-right: 0.5rem;
 }
