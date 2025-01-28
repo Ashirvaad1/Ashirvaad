@@ -69,12 +69,25 @@
 						writeModal.classList.remove("show");
 					}
 				});
-			saveBtn.addEventListener("click", async ()=>
+			saveBtn.addEventListener("click", async()=>
 				{
 					const noteContent=noteInput.value.trim();
-					if(noteContent==="Life")
+					const isVisible=visibilityCheckbox.checked?"visible":"hidden";
+					if(noteContent!=="")
 					{
-						loadHiddenNotes();
+						if(noteContent==="Life")
+						{
+							loadHiddenNotes();
+						}
+						else
+						{
+							await addDoc(collection(db, "notes"),
+								     {
+									     content: noteContent, visibility: isVisible, date: formatDate(new Date()), timestamp: new Date()
+								     });
+							//notesList.innerHTML="";
+							loadNotes();
+						}
 						noteInput.value="";
 						visibilityCheckbox.checked=true;
 						writeModal.classList.remove("show");
