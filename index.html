@@ -98,9 +98,7 @@
             const docRef = doc(db, "notes", editDocId); // Get reference to the document
             await updateDoc(docRef, {
                 content: noteContent,
-                visibility: isVisible,
-                date: formatDate(new Date()), // Update the date
-                timestamp: new Date(), // Update the timestamp
+                visibility: isVisible
             });
             editMode = false; // Reset edit mode
             editDocId = null; // Clear the edit document ID
