@@ -9,37 +9,29 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1 class="title">Personal Diary</h1>
-			<hr color="#6200ea">
+			<h1 class="title">Delightful Notes</h1>
+			<hr class="divider">
 			<div id="notes-container" class="notes-container">
 				<div id="notes-list" class="notes-list"></div>
 			</div>
-			<button id="write-btn" class="write-btn">✍️</button>
+			<button id="write-btn" class="write-btn" aria-label="Write Note">✍️</button>
 			<div id="write-modal" class="write-modal">
 				<div class="modal-content">
-					<h2 class="modal-title">Today's Note</h2>
+					<h2 class="modal-title">New Note</h2>
 					<textarea id="note-input" class="note-input" rows="5" placeholder="Start here..."></textarea>
-					<div class="visibility-toggle">
-						<label for="visibility-checkbox">Make Visible</label>
-						<input type="checkbox" id="visibility-checkbox" checked/>
-					</div>
-					<div class="modal-actions">
-						<button id="save-btn" class="save-btn">Save</button>
+					<div class="modal-footer">
+						<div class="visibility-toggle">
+							<input type="checkbox" id="visibility-checkbox" checked/>
+							<label for="visibility-checkbox">Visible</label>
+						</div>
+						<button id="save-btn" class="save-btn">Save Note</button>
 					</div>
 				</div>
 			</div>
 		</div>
 		<script type="module">
-			import
-			{
-				initializeApp
-			}
-				from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-			import
-			{
-				getFirestore, collection, addDoc, getDocs, query, where, orderBy, startAfter, limit,
-			}
-				from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+			import{initializeApp} from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+			import{getFirestore, collection, addDoc, getDocs, query, where, orderBy,} from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 			const firebaseConfig=
 			{
 				apiKey: "AIzaSyBIsQtSpCCA1QDks8K6WpDe1jXppMtwVOs",
@@ -72,26 +64,22 @@
 			saveBtn.addEventListener("click", async()=>
 				{
 					const noteContent=noteInput.value.trim();
-					const isVisible=visibilityCheckbox.checked?"visible":"hidden";
-					if(noteContent!=="")
+					if(noteContent==="Life")
 					{
-						if(noteContent==="Life")
-						{
-							loadHiddenNotes();
-						}
-						else
-						{
-							await addDoc(collection(db, "notes"),
-								     {
-									     content: noteContent, visibility: isVisible, date: formatDate(new Date()), timestamp: new Date()
-								     });
-							//notesList.innerHTML="";
-							loadNotes();
-						}
-						noteInput.value="";
-						visibilityCheckbox.checked=true;
-						writeModal.classList.remove("show");
+						await loadNotes(true);
 					}
+					else if(noteContent!=="")
+					{
+						const isVisible=visibilityCheckbox.checked?"visible":"hidden";
+						await addDoc(collection(db, "notes"),
+							     {
+								     content: noteContent, visibility: isVisible, date: formatDate(new Date()), timestamp: new Date(),
+							     });
+						await loadNotes(false);
+					}
+					noteInput.value="";
+					visibilityCheckbox.checked=true;
+					writeModal.classList.remove("show");
 				});
 			function formatDate(date)
 			{
@@ -99,40 +87,34 @@
 				const month=date.getMonth()+1;
 				const year=date.getFullYear();
 				const hours=date.getHours();
-				const minutes=date.getMinutes();
+				const minutes=date.getMinutes().toString().padStart(2, "0");
 				const ampm=hours>=12?"p.m.":"a.m.";
 				const hours12=hours%12 || 12;
 				return `${day}.${month}.${year} ${hours12}:${minutes} ${ampm}`;
 			}
-			let lastVisible=null;
-			let isLoading=false;
-			const loadNotes=async()=>
+			const loadNotes=async(showHidden=false)=>
 				{
-					const notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), orderBy("timestamp", "desc"));
+					let notesQuery;
+					if(showHidden)
+					{
+						notesQuery=query(collection(db, "notes"), orderBy("timestamp", "desc"));
+					}
+					else
+					{
+						notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), orderBy("timestamp", "desc"));
+					}
 					const querySnapshot=await getDocs(notesQuery);
+					notesList.innerHTML="";
 					querySnapshot.forEach((doc)=>
 						{
 							const data=doc.data();
 							const noteElement=document.createElement("div");
 							noteElement.classList.add("note");
-							noteElement.innerHTML=`<p>${data.content}</p><p style="float:right;">${data.date}</p><br>`;
+							noteElement.innerHTML=`<p style="font-weight: 500;">${data.content}</p><p style="float: right;">${data.date}</p><br>`;
 							notesList.appendChild(noteElement);
 						});
 				};
-			const loadHiddenNotes=async()=>
-				{
-					const hiddenNotesQuery=query(collection(db, "notes"), where("visibility", "==", "hidden"), orderBy("timestamp", "desc"));
-					const querySnapshot=await getDocs(hiddenNotesQuery);
-					querySnapshot.forEach((doc)=>
-						{
-							const data=doc.data();
-							const noteElement=document.createElement("div");
-							noteElement.classList.add("note");
-							noteElement.innerHTML=`<p>${data.content}</p><p style="float:right;">${data.date}</p><br>`;
-							notesList.appendChild(noteElement);
-						});
-				};
-			loadNotes();
+			loadNotes(false);
 		</script>
 	</body>
 </html>
