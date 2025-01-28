@@ -88,9 +88,15 @@
     // If "Diary" is entered, show all notes (both visible and invisible)
     if (noteContent === "Diary") {
         showInvisible = true; // Show all notes when "Diary" is entered
+        noteInput.value = ""; // Clear the input after the trigger is set
+        visibilityCheckbox.checked = true; // Reset visibility checkbox
+        writeModal.classList.remove("show");
+        await loadNotes(showInvisible); // Load notes with "Diary" condition
+        return; // Stop further execution, do not add a new note
     }
 
-    else if (noteContent !== "") {
+    // Check if there is content in the note field
+    if (noteContent !== "") {
         const isVisible = visibilityCheckbox.checked ? "visible" : "hidden";
 
         if (editMode) {
@@ -103,6 +109,7 @@
             editMode = false; // Reset edit mode
             editDocId = null; // Clear the edit document ID
         } else {
+            // Add a new note
             await addDoc(collection(db, "notes"), {
                 content: noteContent,
                 visibility: isVisible,
@@ -115,10 +122,11 @@
         visibilityCheckbox.checked = true;
         writeModal.classList.remove("show");
 
-        // After saving, load the notes based on the visibility condition
+        // Load notes based on the visibility condition
         await loadNotes(showInvisible);
     }
 });
+
 
 
         async function loadNotes(showInvisible = false) {
