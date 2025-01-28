@@ -145,12 +145,15 @@
     }
 
     const querySnapshot = await getDocs(notesQuery);
+    console.log("Loaded Notes:", querySnapshot);  // Add this line
+
     notesList.innerHTML = "";
 
     querySnapshot.forEach((doc) => {
         const data = doc.data();
+        console.log("Document Data:", data);  // Log the note data
         const noteContent = data.content.replace(/\n/g, "<br>"); // Convert new lines to <br>
-        
+
         const noteElement = document.createElement("div");
         noteElement.classList.add("note");
         noteElement.innerHTML = `
@@ -158,7 +161,7 @@
                 <span class="edit-icon" data-id="${doc.id}">🖊️</span>
                 <span class="delete-icon" data-id="${doc.id}">🗑️</span>
             </div>
-            <p class="note-content" style="white-space: pre-wrap; font-weight: 500;">${noteContent}</p> <!-- Apply pre-wrap for spaces -->
+            <p class="note-content" style="white-space: pre-wrap; font-weight: 500;">${noteContent}</p>
             <p class="note-time" style="float: right;">${data.date}</p>
         `;
         notesList.appendChild(noteElement);
@@ -167,9 +170,6 @@
     setupEditDeleteListeners();
 }
 
-
-            setupEditDeleteListeners();
-        }
 
         function setupEditDeleteListeners() {
             const editIcons = document.querySelectorAll(".edit-icon");
