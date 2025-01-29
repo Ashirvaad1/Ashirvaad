@@ -108,12 +108,10 @@
                     notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), orderBy("timestamp", "desc"));
                 }
                 const querySnapshot=await getDocs(notesQuery);
-                console.log("Loaded Notes:", querySnapshot);
                 notesList.innerHTML="";
                 querySnapshot.forEach((doc)=>
                     {
                         const data=doc.data();
-                        console.log("Document Data:", data);
                         const noteContent=data.content.replace(/\n/g, "<br>");
                         const noteElement=document.createElement("div");
                         noteElement.classList.add("note");
@@ -137,57 +135,55 @@
                             const docSnap=await getDoc(docRef);
                             if(docSnap.exists())
                             {
-                        const noteData = docSnap.data();
-                        noteInput.value = noteData.content;
-                        visibilityCheckbox.checked = noteData.visibility === "visible";
-                        editMode = true;
-                        editDocId = docId;
-                        writeModal.classList.add("show");
-                    } else {
-                        console.error("No such document!");
+                                const noteData=docSnap.data();
+                                noteInput.value=noteData.content;
+                                visibilityCheckbox.checked=noteData.visibility==="visible";
+                                editMode=true;
+                                editDocId=docId;
+                                writeModal.classList.add("show");
+                            }
+                        }));
+                const deleteIcons=document.querySelectorAll(".delete-icon");
+                deleteIcons.forEach((icon)=>
+                    icon.addEventListener("click", async(e)=>
+                        {
+                            const docId=e.target.getAttribute("data-id");
+                            await deleteDoc(doc(db, "notes", docId));
+                            await loadNotes();
+                        }));
+            }
+            notesList.addEventListener("click", (e)=>
+                {
+                    const note=e.target.closest(".note");
+                    if(note)
+                    {
+                        const noteHeader=note.querySelector(".note-header");
+                        noteHeader.style.display=noteHeader.style.display==="flex"?"none":"flex";
                     }
-                })
-            );
-
-            const deleteIcons = document.querySelectorAll(".delete-icon");
-            deleteIcons.forEach((icon) =>
-                icon.addEventListener("click", async (e) => {
-                    const docId = e.target.getAttribute("data-id");
-                    await deleteDoc(doc(db, "notes", docId));
-                    await loadNotes();
-                })
-            );
-        }
-
-        notesList.addEventListener("click", (e) => {
-            const note = e.target.closest(".note");
-            if (note) {
-                const noteHeader = note.querySelector(".note-header");
-                noteHeader.style.display = noteHeader.style.display === "flex" ? "none" : "flex";
-            }
-        });
-
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest(".note")) {
-                document.querySelectorAll(".note-header").forEach((header) => {
-                    header.style.display = "none";
                 });
+            document.addEventListener("click", (e)=>
+                {
+                    if(!e.target.closest(".note"))
+                    {
+                        document.querySelectorAll(".note-header").forEach((header)=>
+                            {
+                                header.style.display="none";
+                            });
+                    }
+                });
+            function formatDate(date)
+            {
+                const day=date.getDate();
+                const month=date.getMonth()+1;
+                const year=date.getFullYear();
+                const hours=date.getHours();
+                const minutes=date.getMinutes().toString().padStart(2, "0");
+                const ampm=hours>=12?"p.m.":"a.m.";
+                const hours12=hours%12 || 12;
+                return `${day}.${month}.${year} ${hours12}:${minutes} ${ampm}`;
             }
-        });
-
-        function formatDate(date) {
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear();
-            const hours = date.getHours();
-            const minutes = date.getMinutes().toString().padStart(2, "0");
-            const ampm = hours >= 12 ? "p.m." : "a.m.";
-            const hours12 = hours % 12 || 12;
-            return `${day}.${month}.${year} ${hours12}:${minutes} ${ampm}`;
-        }
-
-        loadNotes();
-    </script>
-    <script type='text/javascript' src='//pl25717256.profitablecpmrate.com/e8/fb/11/e8fb11b4a51ee1b67845f55cfa8561f1.js'></script>
-</body>
+            loadNotes();
+        </script>
+        <script type='text/javascript' src='//pl25717256.profitablecpmrate.com/e8/fb/11/e8fb11b4a51ee1b67845f55cfa8561f1.js'></script>
+    </body>
 </html>
