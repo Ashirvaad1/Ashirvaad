@@ -1,184 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delightful Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <h1 class="title">Delightful Notes</h1>
-        <hr class="divider">
-        <div id="notes-container" class="notes-container">
-            <div id="notes-list" class="notes-list"></div>
-        </div>
-        <button id="write-btn" class="write-btn" aria-label="Write Note">✍️</button>
-        <div id="write-modal" class="write-modal">
-            <div class="modal-content">
-                <h2 class="modal-title">New Note</h2>
-                <textarea id="note-input" class="note-input" rows="5" placeholder="Nothing but creativity"></textarea>
-                <div class="modal-footer">
-                    <div class="visibility-toggle">
-                        <input type="checkbox" id="visibility-checkbox" checked />
-                        <label for="visibility-checkbox">Visible</label>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Delightful Notes</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="title">Delightful Notes</h1><hr class="divider">
+            <div id="notes-container" class="notes-container">
+                <div id="notes-list" class="notes-list"></div>
+            </div>
+            <button id="write-btn" class="write-btn" aria-label="Write Note">✍️</button>
+            <div id="write-modal" class="write-modal">
+                <div class="modal-content">
+                    <h2 class="modal-title">New Note</h2>
+                    <textarea id="note-input" class="note-input" rows="8" placeholder="Nothing but creativity"></textarea>
+                    <div class="modal-footer">
+                        <div class="visibility-toggle">
+                            <input type="checkbox" id="visibility-checkbox" checked/>
+                            <label for="visibility-checkbox">Visible</label>
+                        </div>
+                        <button id="save-btn" class="save-btn">Save Note</button>
                     </div>
-                    <button id="save-btn" class="save-btn">Save Note</button>
                 </div>
             </div>
         </div>
-    </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-        import {
-            getFirestore,
-            collection,
-            addDoc,
-            getDocs,
-            query,
-            where,
-            orderBy,
-            deleteDoc,
-            doc,
-            getDoc,
-            updateDoc
-        } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIsQtSpCCA1QDks8K6WpDe1jXppMtwVOs",
-            authDomain: "notes-81643.firebaseapp.com",
-            projectId: "notes-81643",
-            storageBucket: "notes-81643.appspot.com",
-            messagingSenderId: "896217476176",
-            appId: "1:896217476176:web:02bb0d8fe5dae50519f555",
-            measurementId: "G-PVHEPSRWML",
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const writeBtn = document.getElementById("write-btn");
-        const writeModal = document.getElementById("write-modal");
-        const noteInput = document.getElementById("note-input");
-        const saveBtn = document.getElementById("save-btn");
-        const visibilityCheckbox = document.getElementById("visibility-checkbox");
-        const notesList = document.getElementById("notes-list");
-
-        let editMode = false;
-        let editDocId = null;
-
-        writeBtn.addEventListener("click", () => {
-            writeModal.classList.add("show");
-        });
-
-        document.addEventListener("click", (e) => {
-            if (e.target !== writeModal && e.target !== writeBtn && !writeModal.contains(e.target)) {
-                writeModal.classList.remove("show");
-                editMode = false;
-                editDocId = null;
-                noteInput.value = "";
+        <script type="text/javascript">atOptions={'key' : 'e0b559a35dd18f7ac46d4809bf51b345', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/e0b559a35dd18f7ac46d4809bf51b345/invoke.js"></script>
+        <script type="module">
+            import{initializeApp}
+                from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+            import{getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, getDoc, updateDoc}
+                from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+            const firebaseConfig={
+                apiKey: "AIzaSyBIsQtSpCCA1QDks8K6WpDe1jXppMtwVOs",
+                authDomain: "notes-81643.firebaseapp.com",
+                projectId: "notes-81643",
+                storageBucket: "notes-81643.appspot.com",
+                messagingSenderId: "896217476176",
+                appId: "1:896217476176:web:02bb0d8fe5dae50519f555",
+                measurementId: "G-PVHEPSRWML"};
+            const app=initializeApp(firebaseConfig);
+            const db=getFirestore(app);
+            const writeBtn=document.getElementById("write-btn");
+            const writeModal=document.getElementById("write-modal");
+            const noteInput=document.getElementById("note-input");
+            const saveBtn=document.getElementById("save-btn");
+            const visibilityCheckbox=document.getElementById("visibility-checkbox");
+            const notesList=document.getElementById("notes-list");
+            let editMode=false;
+            let editDocId=null;
+            writeBtn.addEventListener("click", ()=>
+                {
+                    writeModal.classList.add("show");
+                });
+            document.addEventListener("click", (e)=>
+                {
+                    if(e.target!==writeModal && e.target!==writeBtn && !writeModal.contains(e.target))
+                    {
+                        writeModal.classList.remove("show");
+                        editMode=false;
+                        editDocId=null;
+                        noteInput.value="";
+                    }
+                });
+            saveBtn.addEventListener("click", async()=>
+                {
+                    const noteContent=noteInput.value.trim();
+                    let showInvisible=false;
+                    if(noteContent==="Diarydfe")
+                    {
+                        showInvisible=true;
+                        noteInput.value="";
+                        visibilityCheckbox.checked=true;
+                        writeModal.classList.remove("show");
+                        await loadNotes(showInvisible);
+                        return;
+                    }
+                    if(noteContent!=="")
+                    {
+                        const isVisible=visibilityCheckbox.checked?"visible":"hidden";
+                        if(editMode)
+                        {
+                            const docRef=doc(db, "notes", editDocId);
+                            await updateDoc(docRef, {content: noteContent, visibility: isVisible});
+                            editMode=false;
+                            editDocId=null;
+                        }
+                        else
+                        {
+                            await addDoc(collection(db, "notes"), {content: noteContent, visibility: isVisible, date: formatDate(new Date()), timestamp: new Date(),});
+                        }
+                        noteInput.value="";
+                        visibilityCheckbox.checked=true;
+                        writeModal.classList.remove("show");
+                        await loadNotes(showInvisible);
+                    }
+                });
+            async function loadNotes(showInvisible=false)
+            {
+                let notesQuery=query(collection(db, "notes"), orderBy("timestamp", "desc"));
+                if(!showInvisible)
+                {
+                    notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), orderBy("timestamp", "desc"));
+                }
+                const querySnapshot=await getDocs(notesQuery);
+                console.log("Loaded Notes:", querySnapshot);
+                notesList.innerHTML="";
+                querySnapshot.forEach((doc)=>
+                    {
+                        const data=doc.data();
+                        console.log("Document Data:", data);
+                        const noteContent=data.content.replace(/\n/g, "<br>");
+                        const noteElement=document.createElement("div");
+                        noteElement.classList.add("note");
+                        noteElement.innerHTML=`
+                        <div class="note-header"><span class="edit-icon" data-id="${doc.id}">🖊️</span>
+                        <span class="delete-icon" data-id="${doc.id}">🗑️</span></div>
+                        <p class="note-content" style="white-space: pre-wrap; font-weight: 500;">${noteContent}</p>
+                        <p class="note-time" style="float: right;">${data.date}</p>`;
+                        notesList.appendChild(noteElement);
+                    });
+                setupEditDeleteListeners();
             }
-        });
-
-        saveBtn.addEventListener("click", async () => {
-    const noteContent = noteInput.value.trim();
-    let showInvisible = false;
-
-    // If "Diary" is entered, show all notes (both visible and invisible)
-    if (noteContent === "Diary") {
-        showInvisible = true; // Show all notes when "Diary" is entered
-        noteInput.value = ""; // Clear the input after the trigger is set
-        visibilityCheckbox.checked = true; // Reset visibility checkbox
-        writeModal.classList.remove("show");
-        await loadNotes(showInvisible); // Load notes with "Diary" condition
-        return; // Stop further execution, do not add a new note
-    }
-
-    // Check if there is content in the note field
-    if (noteContent !== "") {
-        const isVisible = visibilityCheckbox.checked ? "visible" : "hidden";
-
-        if (editMode) {
-            // Update the existing note
-            const docRef = doc(db, "notes", editDocId); // Get reference to the document
-            await updateDoc(docRef, {
-                content: noteContent,
-                visibility: isVisible
-            });
-            editMode = false; // Reset edit mode
-            editDocId = null; // Clear the edit document ID
-        } else {
-            // Add a new note
-            await addDoc(collection(db, "notes"), {
-                content: noteContent,
-                visibility: isVisible,
-                date: formatDate(new Date()),
-                timestamp: new Date(),
-            });
-        }
-
-        noteInput.value = "";
-        visibilityCheckbox.checked = true;
-        writeModal.classList.remove("show");
-
-        // Load notes based on the visibility condition
-        await loadNotes(showInvisible);
-    }
-});
-
-
-
-        async function loadNotes(showInvisible = false) {
-    let notesQuery = query(
-        collection(db, "notes"),
-        orderBy("timestamp", "desc")
-    );
-
-    // If showInvisible is false, only load visible notes
-    if (!showInvisible) {
-        notesQuery = query(
-            collection(db, "notes"),
-            where("visibility", "==", "visible"), // Filter only visible notes
-            orderBy("timestamp", "desc")
-        );
-    }
-
-    const querySnapshot = await getDocs(notesQuery);
-    console.log("Loaded Notes:", querySnapshot);  // Add this line
-
-    notesList.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        console.log("Document Data:", data);  // Log the note data
-        const noteContent = data.content.replace(/\n/g, "<br>"); // Convert new lines to <br>
-
-        const noteElement = document.createElement("div");
-        noteElement.classList.add("note");
-        noteElement.innerHTML = `
-            <div class="note-header">
-                <span class="edit-icon" data-id="${doc.id}">🖊️</span>
-                <span class="delete-icon" data-id="${doc.id}">🗑️</span>
-            </div>
-            <p class="note-content" style="white-space: pre-wrap; font-weight: 500;">${noteContent}</p>
-            <p class="note-time" style="float: right;">${data.date}</p>
-        `;
-        notesList.appendChild(noteElement);
-    });
-
-    setupEditDeleteListeners();
-}
-
-
-        function setupEditDeleteListeners() {
-            const editIcons = document.querySelectorAll(".edit-icon");
-            editIcons.forEach((icon) =>
-                icon.addEventListener("click", async (e) => {
-                    const docId = e.target.getAttribute("data-id");
-                    const docRef = doc(db, "notes", docId); // Get document reference
-                    const docSnap = await getDoc(docRef); // Correctly fetch document data
-                    if (docSnap.exists()) {
+            function setupEditDeleteListeners()
+            {
+                const editIcons=document.querySelectorAll(".edit-icon");
+                editIcons.forEach((icon)=>
+                    icon.addEventListener("click", async (e)=>
+                        {
+                            const docId=e.target.getAttribute("data-id");
+                            const docRef=doc(db, "notes", docId);
+                            const docSnap=await getDoc(docRef);
+                            if(docSnap.exists())
+                            {
                         const noteData = docSnap.data();
                         noteInput.value = noteData.content;
                         visibilityCheckbox.checked = noteData.visibility === "visible";
@@ -230,6 +188,6 @@
 
         loadNotes();
     </script>
-    <script type='text/javascript' src='//pl25716481.profitablecpmrate.com/ae/24/53/ae2453936043f3427bc7b082eca60afd.js'></script>
+    <script type='text/javascript' src='//pl25717256.profitablecpmrate.com/e8/fb/11/e8fb11b4a51ee1b67845f55cfa8561f1.js'></script>
 </body>
 </html>
