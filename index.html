@@ -56,17 +56,16 @@
             writeBtn.addEventListener("click", ()=>
                 {
                     writeModal.classList.add("show");
-                    setTimeout(()=>
+                    noteInput.addEventListener("mouseup", ()=>
                         {
-                            noteInput.addEventListener("mouseup", ()=>
-                                {
-                                    const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
-                                    if(selectedText==="Diary")
-                                    {
-                                        localStorage.setItem("saved", "true");
-                                    }
-                                });
-                        }, 100);
+                            const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
+                            console.log("Selected Text:", selectedText);
+                            if(selectedText==="Diary")
+                            {
+                                localStorage.setItem("saved", "true");
+                                console.log("Saved to localStorage!");
+                            }
+                        });
                 });
             document.addEventListener("click", (e)=>
                 {
@@ -82,6 +81,8 @@
                 {
                     const noteContent=noteInput.value.trim();
                     let showInvisible=false;
+                    console.log("Note Content:", noteContent);
+                    console.log("LocalStorage Saved:", localStorage.getItem("saved"));
                     if(noteContent==="PersonalDiary" && localStorage.getItem("saved")==="true")
                     {
                         localStorage.removeItem("saved");
@@ -89,6 +90,7 @@
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
                         writeModal.classList.remove("show");
+                        console.log("Access granted! Showing hidden notes...");
                         await loadNotes(showInvisible);
                         return;
                     }
