@@ -71,7 +71,7 @@
                 {
                     const noteContent=noteInput.value.trim();
                     let showInvisible=false;
-                    if(noteContent==="Diarydfe")
+                    if(noteContent==="PersonalDiary")
                     {
                         showInvisible=true;
                         noteInput.value="";
@@ -92,7 +92,7 @@
                         }
                         else
                         {
-                            await addDoc(collection(db, "notes"), {content: noteContent, visibility: isVisible, date: formatDate(new Date()), timestamp: new Date(),});
+                            await addDoc(collection(db, "notes"), {content: noteContent, visibility: isVisible, date: formatDate(new Date()), timestamp: new Date(), deleted: false});
                         }
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
@@ -102,10 +102,10 @@
                 });
             async function loadNotes(showInvisible=false)
             {
-                let notesQuery=query(collection(db, "notes"), orderBy("timestamp", "desc"));
+                let notesQuery=query(collection(db, "notes"), where("deleted", "==", false), orderBy("timestamp", "desc"));
                 if(!showInvisible)
                 {
-                    notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), orderBy("timestamp", "desc"));
+                    notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), where("deleted", "==", false), orderBy("timestamp", "desc"));
                 }
                 const querySnapshot=await getDocs(notesQuery);
                 notesList.innerHTML="";
@@ -148,7 +148,8 @@
                     icon.addEventListener("click", async(e)=>
                         {
                             const docId=e.target.getAttribute("data-id");
-                            await deleteDoc(doc(db, "notes", docId));
+                            const docRef=doc(db, "notes", docId);
+                            await updateDoc(docRef, {deleted: true});
                             await loadNotes();
                         }));
             }
