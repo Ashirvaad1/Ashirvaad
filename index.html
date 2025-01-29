@@ -55,12 +55,18 @@
             let editDocId=null;
             writeBtn.addEventListener("click", ()=>
                 {
-                    const selection=window.getSelection().toString().trim();
-                    if(selection==="New N")
-                    {
-                        localStorage.setItem("saved", "true");
-                    }
                     writeModal.classList.add("show");
+                    setTimeout(()=>
+                        {
+                            noteInput.addEventListener("mouseup", ()=>
+                                {
+                                    const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
+                                    if(selectedText==="New N")
+                                    {
+                                        localStorage.setItem("saved", "true");
+                                    }
+                                });
+                        }, 100);
                 });
             document.addEventListener("click", (e)=>
                 {
