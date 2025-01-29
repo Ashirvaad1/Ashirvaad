@@ -166,8 +166,8 @@ body
         padding: 1.5rem;
     }
 }
-
-.notes-list .note {
+.notes-list .note
+{
     position: relative;
     padding: 1rem;
     border-radius: 12px;
@@ -175,30 +175,28 @@ body
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 1rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden; /* Prevent content overflow */
+    overflow: hidden;
 }
-
-.notes-list .note:hover {
+.notes-list .note:hover
+{
     transform: translateY(-5px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-
-/* Top-right positioning for the note header (icons) */
-.note-header {
+.note-header
+{
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
     display: flex;
     gap: 0.5rem;
-    visibility: hidden; /* Initially hidden */
+    visibility: hidden;
 }
-
-.notes-list .note:hover .note-header {
-    visibility: visible; /* Show on hover */
+.notes-list .note:hover .note-header
+{
+    visibility: visible;
 }
-
-/* Styling for edit and delete icons */
-.edit-icon, .delete-icon {
+.edit-icon, .delete-icon
+{
     font-size: 1.2rem;
     cursor: pointer;
     color: #6200ea;
@@ -208,24 +206,24 @@ body
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, color 0.2s ease;
 }
-
-.edit-icon:hover, .delete-icon:hover {
+.edit-icon:hover, .delete-icon:hover
+{
     color: #3700b3;
     transform: scale(1.1);
 }
-
-/* Styling for the time to stay aligned and within boundaries */
-.note-time {
+.note-time
+{
     font-size: 0.9rem;
     color: #555;
     margin-top: 0.5rem;
-    white-space: nowrap; /* Prevent wrapping */
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Add ellipsis if overflowing */
-    float: right; /* Align the time to the right */
-    clear: both; /* Ensure proper layout */
+    text-overflow: ellipsis;
+    float: right;
+    clear: both;
 }
-.note-content {
-    white-space: pre-wrap; /* Preserves spaces and line breaks */
+.note-content
+{
+    white-space: pre-wrap;
     font-weight: 500;
 }
