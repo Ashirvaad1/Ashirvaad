@@ -56,27 +56,17 @@
             writeBtn.addEventListener("click", ()=>
                 {
                     writeModal.classList.add("show");
-                    noteInput.addEventListener("mouseup", ()=>
-                        {
-                            const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
-                            console.log("Selected Text:", selectedText);
-                            if(selectedText==="Diary")
-                            {
-                                localStorage.setItem("saved", "true");
-                                console.log("Saved to localStorage!");
-                            }
-                        });
-                    noteInput.addEventListener("touchend", ()=>
-                        {
-                            const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
-                            console.log("Selected Text:", selectedText);
-                            if(selectedText==="Diary")
-                            {
-                                localStorage.setItem("saved", "true");
-                                console.log("Saved to localStorage!");
-                            }
-                        });
                 });
+            function handleTextSelection()
+            {
+                const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
+                if(selectedText==="Diary")
+                {
+                    localStorage.setItem("saved", "true");
+                }
+            }
+            noteInput.addEventListener("mouseup", handleTextSelection);
+            noteInput.addEventListener("touchend", handleTextSelection);
             document.addEventListener("click", (e)=>
                 {
                     if(e.target!==writeModal && e.target!==writeBtn && !writeModal.contains(e.target))
