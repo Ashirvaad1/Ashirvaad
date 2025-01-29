@@ -66,6 +66,16 @@
                                 console.log("Saved to localStorage!");
                             }
                         });
+                    noteInput.addEventListener("touchend", ()=>
+                        {
+                            const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
+                            console.log("Selected Text:", selectedText);
+                            if(selectedText==="Diary")
+                            {
+                                localStorage.setItem("saved", "true");
+                                console.log("Saved to localStorage!");
+                            }
+                        });
                 });
             document.addEventListener("click", (e)=>
                 {
