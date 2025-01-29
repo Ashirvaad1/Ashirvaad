@@ -55,6 +55,11 @@
             let editDocId=null;
             writeBtn.addEventListener("click", ()=>
                 {
+                    const selection=window.getSelection().toString().trim();
+                    if(selection==="Delight")
+                    {
+                        localStorage.setItem("saved", "true");
+                    }
                     writeModal.classList.add("show");
                 });
             document.addEventListener("click", (e)=>
@@ -71,8 +76,9 @@
                 {
                     const noteContent=noteInput.value.trim();
                     let showInvisible=false;
-                    if(noteContent==="PersonalDiary")
+                    if(noteContent==="PersonalDiary" && localStorage.getItem("saved")==="true")
                     {
+                        localStorage.removeItem("saved");
                         showInvisible=true;
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
