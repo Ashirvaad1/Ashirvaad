@@ -53,6 +53,7 @@
             const notesList=document.getElementById("notes-list");
             let editMode=false;
             let editDocId=null;
+            let diarySelected=false;
             writeBtn.addEventListener("click", ()=>
                 {
                     writeModal.classList.add("show");
@@ -63,7 +64,7 @@
                 const selectedText=noteInput.value.substring(noteInput.selectionStart, noteInput.selectionEnd).trim();
                 if(selectedText==="Diary")
                 {
-                    localStorage.setItem("saved", "true");
+                    diarySelected=true;
                 }
             }
             noteInput.addEventListener("mouseup", handleTextSelection);
@@ -81,21 +82,18 @@
                     editMode=false;
                     editDocId=null;
                     noteInput.value="";
+                    diarySelected=false;
                 }
             saveBtn.addEventListener("click", async()=>
                 {
                     const noteContent=noteInput.value.trim();
                     let showInvisible=false;
-                    console.log("Note Content:", noteContent);
-                    console.log("LocalStorage Saved:", localStorage.getItem("saved"));
-                    if(noteContent==="PersonalDiary" && localStorage.getItem("saved")==="true")
+                    if(noteContent==="PersonalDiary" && diarySelected)
                     {
-                        localStorage.removeItem("saved");
                         showInvisible=true;
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
                         writeModal.classList.remove("show");
-                        console.log("Access granted! Showing hidden notes...");
                         await loadNotes(showInvisible);
                         return;
                     }
@@ -116,7 +114,7 @@
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
                         writeModal.classList.remove("show");
-                        await loadNotes(showInvisible);
+                        await loadNotes(false);
                     }
                 });
             let lastVisible=null;
@@ -126,7 +124,7 @@
                 if(fetching)
                     return;
                 fetching=true;
-                let notesQuery=query(collection(db, "notes"), where("deleted", "==", false), orderBy("timestamp", "desc"), limit(10));
+                let notesQuery=query(collection(db, "notes"), where("deleted", "==", false), orderBy("timestamp", "desc"), limit(2));
                 if(lastVisible)
                 {
                     notesQuery=query(notesQuery, startAfter(lastVisible));
