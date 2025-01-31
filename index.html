@@ -88,7 +88,7 @@
                 {
                     const noteContent=noteInput.value.trim();
                     let showInvisible=false;
-                    if(noteContent==="PersonalDiary")
+                    if(diarySelected && noteContent==="PersonalDiary")
                     {
                         localStorage.setItem("saved", "true");
                         showInvisible=true;
