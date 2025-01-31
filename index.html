@@ -56,6 +56,7 @@
             writeBtn.addEventListener("click", ()=>
                 {
                     writeModal.classList.add("show");
+                    setTimeout(()=> noteInput.focus(), 100);
                 });
             function handleTextSelection()
             {
@@ -67,16 +68,20 @@
             }
             noteInput.addEventListener("mouseup", handleTextSelection);
             noteInput.addEventListener("touchend", handleTextSelection);
-            document.addEventListener("click", (e)=>
+            writeModal.addEventListener("click", (e)=>
                 {
-                    if(e.target!==writeModal && e.target!==writeBtn && !writeModal.contains(e.target))
+                    if(e.target===writeModal)
                     {
-                        writeModal.classList.remove("show");
-                        editMode=false;
-                        editDocId=null;
-                        noteInput.value="";
+                        closeModal();
                     }
                 });
+            function closeModal()
+                {
+                    writeModal.classList.remove("show");
+                    editMode=false;
+                    editDocId=null;
+                    noteInput.value="";
+                }
             saveBtn.addEventListener("click", async()=>
                 {
                     const noteContent=noteInput.value.trim();
@@ -114,29 +119,47 @@
                         await loadNotes(showInvisible);
                     }
                 });
-            async function loadNotes(showInvisible=false)
+            let lastVisible=null;
+            let fetching=false;
+            async function loadNotes(showInvisible=false, initialLoad=false)
             {
-                let notesQuery=query(collection(db, "notes"), where("deleted", "==", false), orderBy("timestamp", "desc"));
+                if(fetching)
+                    return;
+                fetching=true;
+                let notesQuery=query(collection(db, "notes"), where("deleted", "==", false), orderBy("timestamp", "desc"), limit(10));
+                if(lastVisible)
+                {
+                    notesQuery=query(notesQuery, startAfter(lastVisible));
+                }
                 if(!showInvisible)
                 {
-                    notesQuery=query(collection(db, "notes"), where("visibility", "==", "visible"), where("deleted", "==", false), orderBy("timestamp", "desc"));
+                    notesQuery=query(notesQuery, where("visibility", "==", "visible"));
                 }
                 const querySnapshot=await getDocs(notesQuery);
-                notesList.innerHTML="";
+                if(!querySnapshot.empty)
+                {
+                    lastVisible=querySnapshot.docs[querySnapshot.docs.length-1];
+                }
+                if(initialLoad)
+                {
+                    notesList.innerHTML="";
+                }
                 querySnapshot.forEach((doc)=>
                     {
                         const data=doc.data();
-                        const noteContent=data.content.replace(/\n/g, "<br>");
                         const noteElement=document.createElement("div");
                         noteElement.classList.add("note");
                         noteElement.innerHTML=`
-                        <div class="note-header"><span class="edit-icon" data-id="${doc.id}">🖊️</span>
-                        <span class="delete-icon" data-id="${doc.id}">🗑️</span></div>
-                        <p class="note-content" style="white-space: pre-wrap; font-weight: 500;">${noteContent}</p>
+                        <div class="note-header">
+                        <span class="edit-icon" data-id="${doc.id}">🖊️</span>
+                        <span class="delete-icon" data-id="${doc.id}">🗑️</span>
+                        </div>
+                        <p class="note-content"  style="white-space: pre-wrap; font-weight: 500;">${data.content.replace(/\n/g, "<br>")}</p>
                         <p class="note-time" style="float: right;">${data.date}</p>`;
                         notesList.appendChild(noteElement);
                     });
                 setupEditDeleteListeners();
+                fetching=false;
             }
             function setupEditDeleteListeners()
             {
@@ -162,9 +185,13 @@
                     icon.addEventListener("click", async(e)=>
                         {
                             const docId=e.target.getAttribute("data-id");
-                            const docRef=doc(db, "notes", docId);
-                            await updateDoc(docRef, {deleted: true});
-                            await loadNotes();
+                            const confirmation=confirm("Delete note permanently?");
+                            if(confirmation)
+                            {
+                                const docRef=doc(db, "notes", docId);
+                                await updateDoc(docRef, {deleted: true});
+                                await loadNotes();
+                            }
                         }));
             }
             notesList.addEventListener("click", (e)=>
@@ -197,7 +224,14 @@
                 const hours12=hours%12 || 12;
                 return `${day}.${month}.${year} ${hours12}:${minutes} ${ampm}`;
             }
-            loadNotes();
+            loadNotes(true, true);
+            window.addEventListener("scroll", ()=>
+                {
+                    if(window.innerHeight+window.scrollY>=document.body.offsetHeight-100 && !fetching)
+                    {
+                        loadNotes();
+                    }
+                });
         </script>
         <script type='text/javascript' src='//pl25717256.profitablecpmrate.com/e8/fb/11/e8fb11b4a51ee1b67845f55cfa8561f1.js'></script>
     </body>
