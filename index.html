@@ -87,19 +87,9 @@
             saveBtn.addEventListener("click", async()=>
                 {
                     const noteContent=noteInput.value.trim();
-                    let showInvisible=false;
                     if(diarySelected && noteContent==="PersonalDiary")
                     {
                         localStorage.setItem("saved", "true");
-                        showInvisible=true;
-                    }
-                    if(localStorage.getItem("saved")==="true")
-                    {
-                        showInvisible=true;
-                        localStorage.removeItem("saved");
-                    }
-                    if(showInvisible)
-                    {
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
                         writeModal.classList.remove("show");
