@@ -88,13 +88,22 @@
                 {
                     const noteContent=noteInput.value.trim();
                     let showInvisible=false;
-                    if(noteContent==="PersonalDiary" && diarySelected)
+                    if(noteContent==="PersonalDiary")
+                    {
+                        localStorage.setItem("saved", "true");
+                        showInvisible=true;
+                    }
+                    if(localStorage.getItem("saved")==="true")
                     {
                         showInvisible=true;
+                        localStorage.removeItem("saved");
+                    }
+                    if(showInvisible)
+                    {
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
                         writeModal.classList.remove("show");
-                        await loadNotes(showInvisible);
+                        await loadNotes(true);
                         return;
                     }
                     if(noteContent!=="")
@@ -114,7 +123,7 @@
                         noteInput.value="";
                         visibilityCheckbox.checked=true;
                         writeModal.classList.remove("show");
-                        await loadNotes(false);
+                        await loadNotes();
                     }
                 });
             let lastVisible=null;
